@@ -73,3 +73,5 @@ fabric.properties
 
 java-config.iml
 
+.idea/**
+
