@@ -62,5 +62,8 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingRandomAccessFile"/>
         </Root>
+        <Logger name="com.foo.Bar" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
     </Loggers>
 </Configuration>
