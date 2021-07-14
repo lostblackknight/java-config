@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="Default" status="WARN" monitorInterval="30">
+    <Properties>
+        <!--项目名-->
+        <Property name="project" value=""/>
+        <!--文件内容是否追加-->
+        <Property name="append" value="false"/>
+        <!--输出的文件路径-->
+        <!--${sys:user.home}/logs、logs、${log4j:configParentLocation}/logs、${project}/logs、${project}/src/main/resources/logs-->
+        <Property name="filePath" value="${log4j:configParentLocation}/logs"/>
+        <!--输出的文件名-->
+        <Property name="fileName" value="app"/>
+        <!--输出的文件的大小-->
+        <Property name="fileSize" value="250MB"/>
+        <!--输出的文件数量-->
+        <Property name="fileMax" value="100"/>
+        <!--cron表达式，控制文件输出的间隔，默认为每隔整点执行一次-->
+        <Property name="cron" value="0 0 0/1 * * ? *"/>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout charset="UTF-8">
+                <!--2.13.0之后的版本使用以下配置-->
+                <LevelPatternSelector
+                        defaultPattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5level %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}">
+                    <PatternMatch key="FATAL"
+                                  pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %red{%5level} %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}"/>
+                    <PatternMatch key="ERROR"
+                                  pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %red{%5level} %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}"/>
+                    <PatternMatch key="WARN"
+                                  pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %yellow{%5level} %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}"/>
+                    <PatternMatch key="INFO"
+                                  pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %green{%5level} %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}"/>
+                    <PatternMatch key="DEBUG"
+                                  pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5level %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}"/>
+                    <PatternMatch key="TRACE"
+                                  pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %white{%5level} %magenta{%pid} --- [%15t] %cyan{%-40c} : %notEmpty{[%blue{%marker}] }%m%n%ex{full}"/>
+                </LevelPatternSelector>
+            </PatternLayout>
+        </Console>
+        <RollingRandomAccessFile name="RollingRandomAccessFile"
+                                 fileName="${filePath}/${fileName}.log"
+                                 filePattern="${filePath}/$${date:yyyy-MM}/${fileName}-%d{MM-dd-yyyy}-%i.log.gz"
+                                 append="${append}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5level %pid --- [%15t] %-40c : %notEmpty{[%marker] }%m%n%ex{full}"/>
+            <Policies>
+                <!--每隔整点执行一次的滚动策略-->
+                <CronTriggeringPolicy schedule="${cron}"/>
+                <!--基于文件大小的滚动策略-->
+                <SizeBasedTriggeringPolicy size="${fileSize}"/>
+            </Policies>
+            <!--最大文件数-->
+            <DefaultRolloverStrategy max="${fileMax}"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <!--level: TRACE、DEBUG、INFO、WARN、ERROR、FATAL、ALL、OFF-->
+        <Root level="TRACE">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingRandomAccessFile"/>
+        </Root>
+        <Logger name="com.foo.Bar" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>
