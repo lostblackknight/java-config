@@ -1,8 +1,11 @@
 package io.github.lostbalckknight.common;
 
 /**
+ * HTTP响应代码
+ *
  * @author chensixiang chensixiang1234@gmail.com
  */
+@SuppressWarnings("unused")
 public enum Code {
     Continue(100, "这个临时响应表明，迄今为止的所有内容都是可行的，客户端应该继续请求，如果已经完成，则忽略它。"),
 
